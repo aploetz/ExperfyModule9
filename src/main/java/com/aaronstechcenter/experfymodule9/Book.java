@@ -18,14 +18,28 @@ import com.datastax.driver.mapping.annotations.ClusteringColumn;
 public class Book {
     @PartitionKey
     private String author;
-    @ClusteringColumn
+    @ClusteringColumn(0)
     private String title;
-    @ClusteringColumn
+    @ClusteringColumn(1)
     private long edition;
     private String isbn;
     private String publisher;
     private long year;
 
+    public Book() {
+        
+    }
+    
+    public Book (String _author, String _title, long _edition, String _isbn,
+            String _publisher, long _year) {
+        author = _author;
+        title =_title;
+        edition = _edition;
+        isbn = _isbn;
+        publisher = _publisher;
+        year = _year;
+    }
+    
     public String getAuthor() {
         return author;
     }

@@ -28,6 +28,12 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.mapping.Mapper;
+import com.datastax.driver.mapping.MappingManager;
+
+import com.google.common.util.concurrent.ListenableFuture;
+
+import java.util.List;
 
 /**
  *
@@ -35,9 +41,12 @@ import com.datastax.driver.core.Session;
  */
 public class BookAuthorDAO {
     private Session session;
+    private Mapper<Book> bookMapper;
         
     public BookAuthorDAO(Session _session) {
         session = _session;
+        
+        bookMapper = new MappingManager(session).mapper(Book.class);
     }
     
     public void getBooksByAuthor(String _author) {
@@ -60,5 +69,28 @@ public class BookAuthorDAO {
                     row.getLong("year")
             );
         }
+    }
+    
+    public void getBookByAuthor(String _author, String _title, long _edition) {
+        System.out.println();
+                
+        Book result = bookMapper.get(_author,_title,_edition);
+        
+        System.out.format("%s %25s %s %20s %d \n",
+            result.getAuthor(), 
+            result.getTitle(),
+            result.getIsbn(),
+            result.getPublisher(),
+            result.getYear()
+        );
+    }
+    
+    public void saveBookByAuthor(String _author, String _title,
+            long _edition, String _isbn, String _publisher, long _year) {
+        System.out.println();
+        
+        Book book = new Book(_author, _title, _edition, _isbn, _publisher, _year);
+        
+        bookMapper.save(book);
     }
 }

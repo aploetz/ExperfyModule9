@@ -41,6 +41,12 @@ public class Module9 {
 
         bookAuthorDao.getBooksByAuthor("Tom Clancy");
         
+        bookAuthorDao.getBookByAuthor("Jim Lovell", "Apollo 13", 1);
+        
+        bookAuthorDao.saveBookByAuthor("Ernest Cline", "Ready Player One", 1,
+                "978-0307887443", "Broadway Books", 2012);
+        bookAuthorDao.getBookByAuthor("Ernest Cline", "Ready Player One", 1);
+        
         cassDao.closeConnection();
     }
 }
