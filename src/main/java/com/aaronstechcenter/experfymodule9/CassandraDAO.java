@@ -23,62 +23,86 @@ SOFTWARE.
  */
 package com.aaronstechcenter.experfymodule9;
 
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.ConsistencyLevel;
+import com.datastax.driver.core.QueryOptions;
+import com.datastax.driver.core.Session;
+
 /**
  *
  * @author aploetz
  */
 public class CassandraDAO {
-    private static Cluster Cluster;
-    private static ISession Session;
+    private Cluster cluster;
+    private Session session;
+    private String password;
+    private String username;
+    private String[] nodeList;
 
-    public CassandraDAO()
-    {
-        SetCluster();
+    public CassandraDAO(String[] _nodes, String _username, String _password) {
+        nodeList = _nodes;
+        username = _username;
+        password = _password;
+        
+        setCluster();
     }
 
-    private void SetCluster()
-    {
-        if (Cluster == null)
-        {
-            Cluster = Connect();
+    private void setCluster() {
+        if (cluster == null) {
+            cluster = connect();
         }
     }
 
-    public ISession GetSession()
-    {
-        if (Cluster == null)
-        {
-            SetCluster();
-            Session = Cluster.Connect();
-        }
-        else if (Session == null)
-        {
-            Session = Cluster.Connect();
+    public Session getSession() {
+        if (cluster == null) {
+            setCluster();
+            session = cluster.connect();
+        } else if (session == null) {
+            session = cluster.connect();
         }
 
-        return Session;
+        return session;
     }
 
-    private Cluster Connect()
-    {
-        string user = getAppSetting("cassandraUser");
-        string pwd = getAppSetting("cassandraPassword");
-        string[] nodes = getAppSetting("cassandraNodes").Split(',');
-
+    private Cluster connect() {
         QueryOptions queryOptions = new QueryOptions()
-            .SetConsistencyLevel(ConsistencyLevel.One);
+            .setConsistencyLevel(ConsistencyLevel.LOCAL_ONE);
 
-        Cluster cluster = Cluster.Builder()
-            .AddContactPoints(nodes)
-            .WithCredentials(user, pwd)
-            .WithQueryOptions(queryOptions)
-            .Build();
-
+        cluster = Cluster.builder()
+            .addContactPoints(nodeList)
+            .withSSL()
+            .withCredentials(username, password)
+            .withQueryOptions(queryOptions)
+            .build();
+        
         return cluster;
     }
-
-    private string getAppSetting(string key)
-    {
-        return System.Configuration.ConfigurationManager.AppSettings[key];
+   
+    public void closeConnection() {
+        cluster.close();
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+    
+    public void setPassword(String _password) {
+        password = _password;
+    }
+    
+    public String getUsername() {
+        return username;
+    }
+    
+    public void setUsername(String _username) {
+        username = _username;
+    }
+    
+    public String[] getNodeList() {
+        return nodeList;
+    }
+    
+    public void setNodeList(String[] _nodeList) {
+        nodeList = _nodeList;
     }
 }
