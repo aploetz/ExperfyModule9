@@ -41,11 +41,24 @@ public class Module9 {
 
         bookAuthorDao.getBooksByAuthor("Tom Clancy");
         
-        bookAuthorDao.getBookByAuthor("Jim Lovell", "Apollo 13", 1);
+//        bookAuthorDao.upsertBookByAuthor("Rick Greenwald", "Oracle Essentials", 
+//                4, "978-0-596-51454-9", "O'Reilly", 2008);
+        
+        bookAuthorDao.deleteBookByAuthor("Rick Greenwald", "Oracle Essentials", 4);
+        
+        //bookAuthorDao.getBookByAuthor("Jim Lovell", "Apollo 13", 1);
+        bookAuthorDao.getBooksByAuthor("Rick Greenwald");
+        bookAuthorDao.getBookByAuthor("Rick Greenwald", "Oracle Essentials", 4);
         
         bookAuthorDao.saveBookByAuthor("Ernest Cline", "Ready Player One", 1,
                 "978-0307887443", "Broadway Books", 2012);
         bookAuthorDao.getBookByAuthor("Ernest Cline", "Ready Player One", 1);
+        
+        SecurityLogDAO securityLogDao = new SecurityLogDAO(cassDao.getSession());
+
+        securityLogDao.upsertSecurityLogs("NC2B", "A99844", "Sam", "Flynn");
+        
+        securityLogDao.getSecurityLogsByLocation("NC2B");
         
         cassDao.closeConnection();
     }

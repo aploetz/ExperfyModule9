@@ -27,6 +27,8 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.QueryOptions;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.policies.TokenAwarePolicy;
+import com.datastax.driver.core.policies.DCAwareRoundRobinPolicy;
 
 /**
  *
@@ -68,11 +70,16 @@ public class CassandraDAO {
         QueryOptions queryOptions = new QueryOptions()
             .setConsistencyLevel(ConsistencyLevel.LOCAL_ONE);
 
+        DCAwareRoundRobinPolicy dcPol = new DCAwareRoundRobinPolicy.Builder()
+            .withLocalDc("AaronsLab")
+            .build();
+        
         cluster = Cluster.builder()
             .addContactPoints(nodeList)
             .withSSL()
             .withCredentials(username, password)
             .withQueryOptions(queryOptions)
+            .withLoadBalancingPolicy(new TokenAwarePolicy(dcPol))
             .build();
         
         return cluster;
