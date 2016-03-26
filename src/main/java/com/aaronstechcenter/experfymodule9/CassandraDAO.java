@@ -35,21 +35,32 @@ import com.datastax.driver.core.policies.DCAwareRoundRobinPolicy;
  * @author aploetz
  */
 public class CassandraDAO {
-    private Cluster cluster;
+    private static Cluster cluster;
     private Session session;
-    private String password;
-    private String username;
-    private String[] nodeList;
+    private static String password;
+    private static String username;
+    private static String[] nodeList;
 
-    public CassandraDAO(String[] _nodes, String _username, String _password) {
-        nodeList = _nodes;
-        username = _username;
-        password = _password;
-        
-        setCluster();
+    private static CassandraDAO instance = null;
+
+    private CassandraDAO() {
+       // Exists only to defeat instantiation.
+    }
+   
+    public static CassandraDAO getIntance(String[] _nodes, String _username, String _password) {
+        if(instance == null) {
+            instance = new CassandraDAO();
+            nodeList = _nodes;
+            username = _username;
+            password = _password;
+
+            setCluster();
+        }
+
+        return instance;
     }
 
-    private void setCluster() {
+    private static void setCluster() {
         if (cluster == null) {
             cluster = connect();
         }
@@ -66,7 +77,7 @@ public class CassandraDAO {
         return session;
     }
 
-    private Cluster connect() {
+    private static Cluster connect() {
         QueryOptions queryOptions = new QueryOptions()
             .setConsistencyLevel(ConsistencyLevel.LOCAL_ONE);
 

@@ -35,7 +35,7 @@ public class Module9 {
         String username = "module9";
         String password = "6Bg|~fs9Ji79";
         
-        CassandraDAO cassDao = new CassandraDAO(nodeList,username,password);
+        CassandraDAO cassDao = CassandraDAO.getIntance(nodeList,username,password);
 
         BookAuthorDAO bookAuthorDao = new BookAuthorDAO(cassDao.getSession());
 
@@ -46,7 +46,9 @@ public class Module9 {
         
         bookAuthorDao.deleteBookByAuthor("Rick Greenwald", "Oracle Essentials", 4);
         
-        //bookAuthorDao.getBookByAuthor("Jim Lovell", "Apollo 13", 1);
+        System.out.println();
+        
+        bookAuthorDao.getBooksByAuthorQB("David A. Lien");
         bookAuthorDao.getBooksByAuthor("Rick Greenwald");
         bookAuthorDao.getBookByAuthor("Rick Greenwald", "Oracle Essentials", 4);
         
@@ -60,6 +62,8 @@ public class Module9 {
         
         securityLogDao.getSecurityLogsByLocation("NC2B");
         
+        bookAuthorDao.closeConnection();
+        securityLogDao.closeConnection();
         cassDao.closeConnection();
     }
 }

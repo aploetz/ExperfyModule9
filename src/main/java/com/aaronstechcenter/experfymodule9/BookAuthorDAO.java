@@ -25,7 +25,9 @@ package com.aaronstechcenter.experfymodule9;
 
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.PreparedStatement;
+import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.mapping.Mapper;
@@ -69,6 +71,24 @@ public class BookAuthorDAO {
             }
         } catch (Exception ex) {
             System.out.println("No books found for this author");
+        }
+    }
+
+    public void getBooksByAuthorQB(String _author) {
+        Statement select = QueryBuilder.select()
+            .from("experfy_class","books_by_author")
+            .where(QueryBuilder.eq("author", _author));
+        
+        ResultSet results = session.execute(select);
+        
+        for (Row row : results) {
+            System.out.format("%s %25s %s %20s %d \n",
+                    row.getString("author"), 
+                    row.getString("title"),
+                    row.getString("isbn"),
+                    row.getString("publisher"),
+                    row.getLong("year")
+            );
         }
     }
     
@@ -126,5 +146,9 @@ public class BookAuthorDAO {
         Book book = new Book(_author, _title, _edition, _isbn, _publisher, _year);
         
         bookMapper.save(book);
+    }
+    
+    public void closeConnection() {
+        session.close();
     }
 }
