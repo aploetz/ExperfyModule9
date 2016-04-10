@@ -39,54 +39,22 @@ public class SecurityLogDAO {
     }
     
     public void getSecurityLogsByLocation(String _location) {
-        String strCQL = "SELECT location,checkpoint_time,employee_id,"
-            + "employee_first,employee_last "
-            + "FROM experfy_class.security_logs "
-            + "WHERE location=?";
+
         
-        try {
-            PreparedStatement statement = session.prepare(strCQL);
-            BoundStatement boundStatement = new BoundStatement(statement);
-            boundStatement.bind(_location);
-
-            System.out.println();
-
-            ResultSet results = session.execute(boundStatement);
-            for (Row row : results) {
-                System.out.format("%s %25s %s %20s %20s \n",
-                        row.getString("location"), 
-                        row.getTimestamp("checkpoint_time"),
-                        row.getString("employee_id"),
-                        row.getString("employee_first"),
-                        row.getString("employee_last")
-                );
-            }
-        } catch (Exception ex) {
-            System.out.println("No security logs found for this location.");
-        }
     }
     
     public void upsertSecurityLogs(String _location, 
             String _employee_id, String _employee_first_name, 
             String _employee_last_name) {
         
-        upsertSecurityLogs(_location,_employee_id,_employee_first_name,_employee_last_name, new Date());
+
     }
     
     public void upsertSecurityLogs(String _location, 
             String _employee_id, String _employee_first_name, 
             String _employee_last_name, Date _checkpoint_time) {
+
         
-        String strCQL = "INSERT INTO experfy_class.security_logs "
-                + "(location,checkpoint_time,employee_id,employee_first,employee_last) "
-                + "VALUES (?,?,?,?,?)";
-        
-        PreparedStatement statement = session.prepare(strCQL);
-        BoundStatement boundStatement = new BoundStatement(statement);
-        boundStatement.bind(_location, _checkpoint_time, _employee_id,
-                _employee_first_name, _employee_last_name);
-        
-        session.execute(boundStatement);
     }
     
     public void closeConnection() {

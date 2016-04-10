@@ -40,6 +40,7 @@ public class CassandraDAO {
     private static String password;
     private static String username;
     private static String[] nodeList;
+    private static String dataCenter;
 
     private static CassandraDAO instance = null;
 
@@ -47,13 +48,11 @@ public class CassandraDAO {
        // Exists only to defeat instantiation.
     }
    
-    public static CassandraDAO getIntance(String[] _nodes, String _username, String _password) {
+    public static CassandraDAO getIntance(String[] _nodes, String _username, String _password, String _dataCenter) {
         if(instance == null) {
             instance = new CassandraDAO();
-            nodeList = _nodes;
-            username = _username;
-            password = _password;
 
+            
             setCluster();
         }
 
@@ -61,43 +60,20 @@ public class CassandraDAO {
     }
 
     private static void setCluster() {
-        if (cluster == null) {
-            cluster = connect();
-        }
+
     }
 
     public Session getSession() {
-        if (cluster == null) {
-            setCluster();
-            session = cluster.connect();
-        } else if (session == null) {
-            session = cluster.connect();
-        }
 
-        return session;
     }
 
     private static Cluster connect() {
-        QueryOptions queryOptions = new QueryOptions()
-            .setConsistencyLevel(ConsistencyLevel.LOCAL_ONE);
 
-        DCAwareRoundRobinPolicy dcPol = new DCAwareRoundRobinPolicy.Builder()
-            .withLocalDc("AaronsLab")
-            .build();
         
-        cluster = Cluster.builder()
-            .addContactPoints(nodeList)
-            .withSSL()
-            .withCredentials(username, password)
-            .withQueryOptions(queryOptions)
-            .withLoadBalancingPolicy(new TokenAwarePolicy(dcPol))
-            .build();
-        
-        return cluster;
     }
    
     public void closeConnection() {
-        cluster.close();
+
     }
     
     public String getPassword() {

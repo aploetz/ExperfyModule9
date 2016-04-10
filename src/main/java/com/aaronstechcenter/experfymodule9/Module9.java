@@ -34,8 +34,9 @@ public class Module9 {
         String[] nodeList = {"192.168.0.100"};
         String username = "module9";
         String password = "6Bg|~fs9Ji79";
+        String dataCenter = "AaronsLab";
         
-        CassandraDAO cassDao = CassandraDAO.getIntance(nodeList,username,password);
+        CassandraDAO cassDao = CassandraDAO.getIntance(nodeList,username,password,dataCenter);
 
         BookAuthorDAO bookAuthorDao = new BookAuthorDAO(cassDao.getSession());
 
@@ -44,26 +45,26 @@ public class Module9 {
 //        bookAuthorDao.upsertBookByAuthor("Rick Greenwald", "Oracle Essentials", 
 //                4, "978-0-596-51454-9", "O'Reilly", 2008);
         
-        bookAuthorDao.deleteBookByAuthor("Rick Greenwald", "Oracle Essentials", 4);
-        
-        System.out.println();
-        
-        bookAuthorDao.getBooksByAuthorQB("David A. Lien");
-        bookAuthorDao.getBooksByAuthor("Rick Greenwald");
-        bookAuthorDao.getBookByAuthor("Rick Greenwald", "Oracle Essentials", 4);
-        
-        bookAuthorDao.saveBookByAuthor("Ernest Cline", "Ready Player One", 1,
-                "978-0307887443", "Broadway Books", 2012);
-        bookAuthorDao.getBookByAuthor("Ernest Cline", "Ready Player One", 1);
-        
-        SecurityLogDAO securityLogDao = new SecurityLogDAO(cassDao.getSession());
-
-        securityLogDao.upsertSecurityLogs("NC2B", "A99844", "Sam", "Flynn");
-        
-        securityLogDao.getSecurityLogsByLocation("NC2B");
+//        bookAuthorDao.deleteBookByAuthor("Rick Greenwald", "Oracle Essentials", 4);
+//        
+//        System.out.println();
+//        
+//        bookAuthorDao.getBooksByAuthorQB("David A. Lien");
+//        bookAuthorDao.getBooksByAuthor("Rick Greenwald");
+//        bookAuthorDao.getBookByAuthor("Rick Greenwald", "Oracle Essentials", 4);
+//        
+//        bookAuthorDao.saveBookByAuthor("Ernest Cline", "Ready Player One", 1,
+//                "978-0307887443", "Broadway Books", 2012);
+//        bookAuthorDao.getBookByAuthor("Ernest Cline", "Ready Player One", 1);
+//        
+//        SecurityLogDAO securityLogDao = new SecurityLogDAO(cassDao.getSession());
+//
+//        securityLogDao.upsertSecurityLogs("NC2B", "A99844", "Sam", "Flynn");
+//        
+//        securityLogDao.getSecurityLogsByLocation("NC2B");
         
         bookAuthorDao.closeConnection();
-        securityLogDao.closeConnection();
+        //securityLogDao.closeConnection();
         cassDao.closeConnection();
     }
 }
